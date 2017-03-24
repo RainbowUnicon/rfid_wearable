@@ -54,7 +54,7 @@ public class Main {
 						for(StatusReport s : arg1){
 							if(s instanceof TemperatureStatusReport){
 								rl.temperature = ((TemperatureStatusReport)s).getTemperature();
-								System.out.println(rl.temperature);
+								//System.out.println(rl.temperature);
 							}
 						}
 						
@@ -68,11 +68,11 @@ public class Main {
 					//System.out.println( r.paramGet("/reader/radio/temperature"));
 					rl.startTimer();
 					r.startReading();
-					Thread.sleep(10000);
+					Thread.sleep(1000);
 					r.stopReading();
 					rl.endTimer();
 					Thread.sleep(1000);
-					System.out.println(i);
+					System.out.println(i + "th cycle");
 				}
 
 				r.removeStatusListener(statusListener);
@@ -80,6 +80,8 @@ public class Main {
 				r.removeReadExceptionListener(exceptionListener);
 				r.destroy();
 				java.awt.Toolkit.getDefaultToolkit().beep();
+				TagDataWriter.write(fileName,rl.getQueue());
+				rl.getQueue().clear();
 			}
 			catch (ReaderException re)
 			{
@@ -90,7 +92,7 @@ public class Main {
 				System.out.println("Exception: " + re.getMessage());
 			}
 		}
-		TagDataWriter.write(fileName,rl.getQueue());
+		
 	}
 
 
@@ -163,8 +165,7 @@ public class Main {
 				break;
 			}
 			if(reply.equalsIgnoreCase("no") || reply.equalsIgnoreCase("n")){
-				sc.close();
-				System.exit(-1);
+				System.out.println("Okay, let's try again");
 			}
 		}
 
@@ -185,9 +186,11 @@ public class Main {
 				desc = line;
 				break;
 			}
-			if(reply.equalsIgnoreCase("no") || reply.equalsIgnoreCase("n")){
-				sc.close();
-				System.exit(-1);
+			else if(reply.equalsIgnoreCase("no") || reply.equalsIgnoreCase("n")){
+				System.out.println("Okay, let's try again");		
+			}
+			else{
+				System.out.println("Sorry, I don't understand what you just said");
 			}
 		}
 		return desc;
